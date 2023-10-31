@@ -1,0 +1,2 @@
+host: db.exaeozpjrqqzfrztgulf.supabase.co
+Password: +^K(5'R9c%lpYjwT6jvIX;iox;OJS
