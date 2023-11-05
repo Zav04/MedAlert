@@ -1,4 +1,4 @@
--- DROP ALL TABLES
+-- DROP TABLET
 DROP TABLE "HistoricMedicalPrescription";
 DROP TABLE "MedicalPrescription";
 DROP TABLE "Dosage";
@@ -13,5 +13,15 @@ DROP TABLE "HealthCare";
 DROP TABLE "UserInfos";
 DROP TABLE "User";
 
-
-
+-- DROP SEQUENCES
+DROP SEQUENCE "user_sequence";
+DROP SEQUENCE "address_sequence";
+DROP SEQUENCE "admin_sequence";
+DROP SEQUENCE "patient_sequence";
+DROP SEQUENCE "medic_sequence";
+DROP SEQUENCE "healthcare_sequence";
+DROP SEQUENCE "family_sequence";
+DROP SEQUENCE "dosage_sequence";
+DROP SEQUENCE "medicine_sequence";
+DROP SEQUENCE "medicalprescription_sequence";
+DROP SEQUENCE "historicmedicalprescription_sequence";
