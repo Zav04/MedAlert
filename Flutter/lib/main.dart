@@ -1,28 +1,43 @@
 import 'package:flutter/material.dart';
 import './Menus/SplashScreen.dart';
 import 'DataBaseConection.dart';
-import './Warnings/NoDataBaseConnection.dart';
+import 'Warnings/NoDataBaseConnection.dart';
+import 'package:flutter/services.dart';
 
 // Importe o pacote de conectividade ou o pacote da sua base de dados
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Verificar conexão com a base de dados antes de iniciar o aplicativo
-  bool dbConnected = await checkSupabaseConnection();
-
-  runApp(MedAlert(dbConnected: dbConnected));
+  runApp(MedAlert());
 }
 
 class MedAlert extends StatelessWidget {
-  final bool dbConnected;
-
-  const MedAlert({Key? key, required this.dbConnected}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: dbConnected ? SplashScreen() : NoConnectionScreen(),
+      home: Scaffold(
+        body: FutureBuilder<bool>(
+          // Substitua isso pela sua lógica de verificação de conexão
+          future: checkSupabaseConnection(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SplashScreen();
+            } else if (snapshot.hasData && snapshot.data!) {
+              return SplashScreen(); // Substitua isso pela tela principal do seu aplicativo
+            } else {
+              // Mostra o widget de sem conexão
+              return NoConnectionWidget(
+                tryAgainAction: () {
+                  checkSupabaseConnection();
+                },
+                exitAction: () {
+                  SystemNavigator.pop();
+                },
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 }
