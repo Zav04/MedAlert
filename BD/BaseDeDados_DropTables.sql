@@ -4,7 +4,6 @@ DROP TABLE "MedicalPrescription";
 DROP TABLE "Dosage";
 DROP TABLE "Medicine";
 DROP TABLE "UserRole";
-DROP TABLE "Address";
 DROP TABLE "Admin";
 DROP TABLE "Family";
 DROP TABLE "Patient";
@@ -15,7 +14,6 @@ DROP TABLE "User";
 
 -- DROP SEQUENCES
 DROP SEQUENCE "user_sequence";
-DROP SEQUENCE "address_sequence";
 DROP SEQUENCE "admin_sequence";
 DROP SEQUENCE "patient_sequence";
 DROP SEQUENCE "medic_sequence";
@@ -25,3 +23,10 @@ DROP SEQUENCE "dosage_sequence";
 DROP SEQUENCE "medicine_sequence";
 DROP SEQUENCE "medicalprescription_sequence";
 DROP SEQUENCE "historicmedicalprescription_sequence";
+
+
+DROP TYPE IF EXISTS status_type;
+DROP TYPE IF EXISTS gender_type;
+DROP TYPE IF EXISTS role;
+
+

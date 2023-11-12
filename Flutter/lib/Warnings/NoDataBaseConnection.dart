@@ -2,27 +2,25 @@ import 'package:flutter/material.dart';
 
 class NoConnectionWidget extends StatelessWidget {
   final VoidCallback tryAgainAction;
-  final VoidCallback exitAction;
 
-  NoConnectionWidget({
+  const NoConnectionWidget({
     Key? key,
     required this.tryAgainAction,
-    required this.exitAction,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 100, horizontal: 100),
+        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 100),
         margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.1),
-        decoration: BoxDecoration(
+            horizontal: MediaQuery.of(context).size.width * 0.05),
+        decoration: const BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black45,
-              blurRadius: 15,
+              color: Colors.black,
+              blurRadius: 50,
               offset: Offset(0, 5),
             ),
           ],
@@ -30,25 +28,20 @@ class NoConnectionWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'SEM LIGAÇÃO',
+            const Text(
+              'Oops! Sem conexão com a internet. Conecte-se para acessar todas as funcionalidades da aplicação',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 15,
               ),
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton(
               onPressed: tryAgainAction,
-              child: Text('TENTAR'),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: exitAction,
-              child: Text('SAIR'),
+              child: const Text('Reconnectar', style: TextStyle(fontSize: 15)),
             ),
           ],
         ),

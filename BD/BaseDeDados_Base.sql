@@ -6,6 +6,14 @@ CREATE SEQUENCE IF NOT EXISTS user_sequence
 INCREMENT 1
 START 1;
 
+-- Status
+-- 1:Ativo
+-- 2:Desativo
+-- 3:Outro
+
+CREATE TYPE status_type AS ENUM (
+   'Ativo', 'Desativo');
+
 -- Tabela User
 CREATE TABLE IF NOT EXISTS "User" (
 	id_user BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('user_sequence'::regclass),
@@ -13,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "User" (
     email VARCHAR UNIQUE NOT NULL,
     password VARCHAR NOT NULL,
     health_number BIGINT UNIQUE NOT NULL,
-    status VARCHAR NOT NULL
+    status status_type NOT NULL
 );
 
 -- =======================
@@ -26,16 +34,29 @@ CREATE TABLE IF NOT EXISTS "User" (
 -- START: USERS_INFOS
 -- =======================
 
+-- Gender
+-- 1:Masculino
+-- 2:Feminimo
+-- 3:Outro
+
+CREATE TYPE gender_type AS ENUM (
+   'Masculino', 'Feminimo', 'Outro'
+);
+
 -- Tabela UserInfos
 CREATE TABLE IF NOT EXISTS "UserInfos" (
     id_user BIGINT NOT NULL,
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
     birth_date DATE NOT NULL,
-    gender VARCHAR NOT NULL,
+    gender gender_type NOT NULL,
     health_number BIGINT UNIQUE NOT NULL,
     email VARCHAR UNIQUE NOT NULL,
     phone_number BIGINT UNIQUE NOT NULL,
+	address VARCHAR NOT NULL,
+    door_number BIGINT NOT NULL,
+    floor_number BIGINT,
+    zip_code VARCHAR NOT NULL,
     FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE
 );
 
@@ -57,40 +78,17 @@ CREATE TABLE IF NOT EXISTS "UserInfos" (
 -- 5:Family
 -- 6:NotAplied
 
+CREATE TYPE role AS ENUM ('Admin', 'Doctor', 'HealthCare', 'Pacient', 'Family', 'NotAplied');
+
 -- Tabela UserRole
 CREATE TABLE IF NOT EXISTS "UserRole" (
-    role BIGINT PRIMARY KEY NOT NULL,
-	role_name VARCHAR NOT NULL,
+    role role PRIMARY KEY NOT NULL,
     id_user BIGINT NOT NULL,
     FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE
 );
 
 -- =======================
 -- END: USERS_Role
--- =======================
-
-
--- =======================
--- START: Adress
--- =======================
--- Sequence
-CREATE SEQUENCE IF NOT EXISTS address_sequence
-INCREMENT 1
-START 1;
-
--- Tabela Address
-CREATE TABLE IF NOT EXISTS "Address" (
-    id_address BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('address_sequence'::regclass),
-    id_user BIGINT NOT NULL,
-    address VARCHAR NOT NULL,
-    door_number BIGINT NOT NULL,
-    floor VARCHAR,
-    zip_code VARCHAR NOT NULL,
-    FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE
-);
-
--- =======================
--- END: Adress
 -- =======================
 
 
@@ -253,7 +251,7 @@ CREATE TABLE IF NOT EXISTS "MedicalPrescription" (
     medic_name VARCHAR NOT NULL,
     emission_date DATE NOT NULL,
     prescription_status BIGINT NOT NULL,
-    date DATE NOT NULL,
+    dt_valid DATE NOT NULL,
     FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE,
     FOREIGN KEY (id_dosage) REFERENCES "Dosage" (id_dosage) ON DELETE CASCADE,
     FOREIGN KEY (id_medicine) REFERENCES "Medicine" (id_medicine) ON DELETE CASCADE
