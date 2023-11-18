@@ -161,8 +161,7 @@ class _CreateUserState extends State<CreateUser> with ErrorMessageOverlayMixin {
                               value: _selectedGender,
                               items: <String>[
                                 'Masculino',
-                                'Feminimo',
-                                'Outro'
+                                'Feminimo'
                               ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
