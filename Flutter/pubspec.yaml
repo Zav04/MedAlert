@@ -2,8 +2,6 @@ name: MedAlert
 description: MedAlert.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-
 version: 1.0.0+1
 
 environment:
@@ -25,6 +23,7 @@ dependencies:
   http: ^0.13.3
   loading_animation_widget: ^1.2.0+4
   gap: ^3.0.1
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

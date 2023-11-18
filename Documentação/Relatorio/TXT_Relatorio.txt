@@ -1,0 +1,103 @@
+2.	Enunciado para o projeto
+Projeto: Aplicação de Alarme de Medicamentos/Tratamentos
+A crescente necessidade de melhorar a adesão e gestão de tratamentos inspirou o desenvolvimento de uma aplicação inovadora de Alarme de Medicamentos/Tratamentos. Este projeto visa criar uma solução móvel intuitiva e eficaz para auxiliar os pacientes na gestão dos seus tratamentos, integrando funcionalidades essenciais e promovendo a conformidade com as prescrições médicas.
+2.1.	Objetivo do Projeto
+A aplicação deverá fornecer recursos para verificar os medicamentos do paciente, estabelecer horários da ingestão da posologia, receber alarmes personalizados, obter informações detalhadas sobre os medicamentos prescritos, registar o histórico de ingestão e validar a ingestão por meio de fotos. O principal propósito é melhorar a qualidade de vida dos pacientes, assegurando a correta ingestão de medicamentos, enquanto proporciona um ambiente seguro, intuitivo e de fácil utilização.
+2.2.	Funcionalidades a implementar:
+Aplicação Móvel:
+•	Implementar uma interface de utilizador móvel para que os pacientes possam verificar facilmente os seus medicamentos, incluindo informações sobre posologia e horários de administração.
+Sistema de Notificações:
+•	Desenvolver um sistema de notificações que envie alertas nos horários programados para a ingestão de medicamentos, garantindo que os pacientes estejam sempre cientes de suas obrigações.
+Informações Detalhadas sobre Medicamentos:
+•	Fornecer informações detalhadas sobre os medicamentos, incluindo posologia, interações medicamentosas e potenciais efeitos colaterais.
+Registo de Histórico de Adesão:
+•	Registar um histórico detalhado da adesão ao tratamento, permitindo que pacientes, médicos e familiares monitorem o cumprimento das prescrições ao longo do tempo.
+Validação por Foto:
+•	Registar de uma foto antes da ingestão da medicação prescrita para controle e validação adicional.
+3.	Instigadores do Projeto
+3.1.	Objetivos do Sistema
+O principal objetivo do sistema é desenvolver uma aplicação que facilite aos pacientes a lembrança de tomar os seus medicamentos corretamente. Para isso, os objetivos específicos incluem:
+Simplicidade e Facilidade de Uso
+Manter o foco na criação de uma interface de utilizador que seja intuitiva e não complicada, removendo barreiras tecnológicas, especialmente para utilizadores que não estão habituados com aplicações digitais.
+Sistema de Notificações Eficiente
+Desenvolver um sistema de notificações que funcione de forma confiável, enviando lembretes oportunos para a ingestão de medicamentos. A possibilidade de membros da família ajudarem na configuração desses lembretes deve ser uma opção fácil.
+Informações Essenciais sobre Medicamentos
+Fornecer informações básicas, mas cruciais sobre os medicamentos, como dosagens, horários, e possíveis efeitos colaterais, sem sobrecarregar o usuário com detalhes excessivos.
+Registo de Adesão ao Tratamento
+Implementar um sistema simples para os pacientes registarem a ingestão dos seus medicamentos, e que permita aos médicos ou familiares autorizados verificar a adesão ao tratamento.
+ 
+Privacidade e Segurança de Dados
+Garantir que a aplicação esteja em conformidade com as normas de privacidade e segurança de dados, protegendo as informações dos usuários.
+3.2.	Identificação dos Intervenientes
+Os principais intervenientes envolvidos no projeto são:
+•	Médicos e Profissionais de Saúde: Os médicos serão os principais utilizadores do sistema para prescrever medicamentos e acompanhar o progresso dos pacientes. Eles podem interagir com o sistema para verificar a adesão do paciente ao tratamento.
+•	Pacientes: Os pacientes são os utilizadores finais do sistema. Eles utilizarão o sistema para validar e ingerir os medicamentos, receber alarmes, ter acesso a informações sobre medicamentos e monitorar seu progresso no tratamento.
+•	Família dos Pacientes: A família dos pacientes desempenha um papel fundamental, pois pode oferecer apoio moral e prático ao familiar, assegurando que sigam as orientações médicas. Embora não sejam utilizadores diretos da aplicação, a sua participação é essencial para garantir o sucesso do tratamento e a adesão aos medicamentos.
+•	Autoridades Reguladoras: Enquanto garantes da conformidade legal e da proteção de dados, são uma consideração fundamental, embora indireta.
+3.3.	Utilizadores do Sistema
+Os principais utilizadores do sistema são:
+•	Pacientes: Como os principais utilizadores, eles interagem com a aplicação diariamente para acompanhar sua medicação.
+•	Família dos Pacientes: Eles fornecem apoio, especialmente em termos de configurar a aplicação e, se necessário, monitorizar o uso e a adesão.
+•	Médicos e Profissionais de Saúde: Embora não sejam utilizadores regulares, eles precisam de acesso para monitorizar a adesão do paciente ao tratamento.
+•	Equipa de Suporte: Uma equipa de suporte técnico pode ser necessária para auxiliar os utilizadores em caso de problemas técnicos ou dúvidas relacionadas à aplicação.
+•	Administradores do Sistema: Os administradores do sistema serão responsáveis pela manutenção, atualização e segurança da aplicação.
+
+4.	Funcionalidades 
+4.1.	Requisitos Funcionais -RF
+Requisitos Funcionais	Tipo	Descrição	Instigadores Beneficiados
+RF1	Fazer Autenticação de Utilizador	Acesso seguro ao sistema mediante credenciais de login registadas, garantindo que as informações médicas sensíveis estejam protegidas e sejam acessíveis apenas aos utilizadores autorizados	Pacientes, Médicos e Profissionais de Saúde, Administradores do Sistema.
+RF2	Visualização do Regime de Medicamentos	Os pacientes e seus familiares podem visualizar, mas não alterar, os medicamentos prescritos e as dosagens, permitindo uma referência clara e evitando confusões ou modificações não autorizadas. 	Pacientes, Família dos Pacientes, Médicos e Profissionais de Saúde.
+RF3	Emissão de Notificações	Envio de alarmes nos horários estipulados para a toma de medicamentos, auxiliando os pacientes a manterem a regularidade e permitindo que os familiares monitorem e ofereçam apoio.	Pacientes, Família dos Pacientes.
+RF4	Aceder ao Histórico de Adesão	Monitorização e registo das aderências e falhas na toma dos medicamentos, proporcionando um histórico para análise dos médicos e permitindo aos pacientes e familiares acompanhar o progresso	Pacientes, Médicos e Profissionais de Saúde, Família dos Pacientes.
+RF5	Fazer Upload de Fotos	Os pacientes podem fazer upload de fotos para validar a toma do medicamento, permitindo aos médicos e/ou familiares.	Pacientes, Médicos e Profissionais de Saúde, Família dos Pacientes.
+Tabela 1 - Requisitos Funcionais
+ 
+4.2.	Requisitos Não Funcionais - RNF
+Requisitos Não Funcionais	Tipo	Descrição	Instigadores Beneficiados
+RNF1	Segurança e Privacidade	Proteção dos dados de saúde do paciente, assegurando a confidencialidade, integridade e disponibilidade das informações, e cumprindo com as regulamentações de proteção de dados	Pacientes, Médicos e Profissionais de Saúde, Administradores do Sistema.
+RNF2	Intuitividade	A aplicação deve ter uma interface simples, intuitiva e amigável para garantir que seja acessível e utilizável por pacientes de todas as idades e habilidades técnicas, bem como seus familiares.	Pacientes, Família dos Pacientes
+RNF3	Compatibilidade	A aplicação deve funcionar de forma consistente e confiável em vários dispositivos e sistemas operacionais, permitindo acesso amplo e sem interrupções.	Pacientes, Médicos e Profissionais de Saúde, Equipa de Suporte.
+RNF4	Desempenho	Alta disponibilidade e tempos de resposta rápidos são essenciais para garantir que os utilizadores tenham acesso imediato às informações, especialmente em situações críticas.	Pacientes, Médicos e Profissionais de Saúde, Administradores do Sistema.
+RNF5	Fiabilidade	Os alarmes e notificações devem ser entregues com precisão e pontualidade para garantir a adesão correta ao regime de medicamentos, crucial para o tratamento eficaz.	Pacientes, Família dos Pacientes
+Tabela 2 - Requisitos Não Funcionais
+ 
+6.	Representações de Estruturas de Dados
+6.1.	Diagrama de Classes
+•	Utilizador: Representa um utilizador genérico do sistema. Este pode ser um paciente, familiares ou profissionais de saúde.
+•	Paciente: O paciente é a central no sistema. Este pode ter um ou mais tratamentos ou medicações prescritas. Onde este tem o acesso direto a várias funcionalidades, como notificações e o seu histórico de posologia.
+•	Familiares: Esta entidade sugere que o sistema permite a integração e envolvimento dos familiares no processo de tratamento do paciente. Eles têm acesso a notificações relevantes e ao histórico de dosagens do paciente, o que é crucial para situações precisa de supervisão ou assistência na administração da medicação.
+•	Médicos e Profissionais de Saúde: Este grupo tem um papel crucial na prescrição de medicações e tratamentos para os pacientes.
+•	Notificações: Funcionalidade essencial que permite ao sistema informar tanto os pacientes quanto seus familiares.
+•	Histórico de Posologia: Representa o registo detalhado das dosagens e medicações administradas ao paciente ao longo do tempo. Este histórico é acessível tanto ao paciente quanto aos seus familiares e médicos.
+•	Prescrição Médica: Documenta a recomendação médica sobre determinada medicação ou tratamento.
+•	Tratamento/Medicação: Descreve o tratamento ou medicação específica que foi prescrita ao paciente.
+•	Medicamento: Representa o medicamento em si, incluindo detalhes como nome e outras informações relevantes.
+•	Posologia: Define a dosagem e frequência com que um medicamento deve ser administrado.
+
+6.2.	Diagrama Entidade Relação
+•	User (Utilizador): Esta tabela armazena as informações básicas de todos os utilizadores do sistema. Serve como a entidade principal para identificar e diferenciar todos os utilizadores.
+•	Userinfo (Informações do Utilizador): Armazena informações detalhadas sobre cada utilizador, como nome completo, data de nascimento, género, entre outros. Esta tabela complementa a tabela User.
+•	UserRole (Função do Utilizador): Armazena os diferentes cargos que um utilizador pode ter no sistema. Isso pode ser usado para controle de acesso e gestão de permissões.
+•	Address (Endereço): Contém informações de endereço dos utilizadores. Isso inclui detalhes como rua, número, andar, código postal, entre outros.
+•	Admin: Representa os administradores do sistema. Esta tabela é uma extensão da tabela User e contém os utilizadores com privilégios administrativos.
+•	Patient (Paciente): Representa os pacientes no sistema. Contém os utilizadores que são pacientes.
+•	Medic (Médico): Representa os médicos no sistema. Armazena informações específicas sobre os médicos.
+•	HealthCare (Profissionais de Saúde): Representa outros grupos de saúde associadas ao sistema.
+•	Family (Família): Representa os membros da família dos pacientes. Esta tabela é usada para manter um registo dos familiares dos pacientes, facilitando a comunicação e o acesso a informações.
+•	Medical Prescription (Prescrição Médica): Representa as prescrições médicas emitidas para os pacientes. Contém detalhes como a medicação prescrita, dosagem e informações relacionadas.
+11.	Historic Medical Prescription (Histórico de Prescrição Médica): Mantém um histórico das prescrições médicas dadas aos pacientes. Isso permite rastrear alterações ou atualizações nas prescrições ao longo do tempo.
+•	Dosage (Posologia): Contém informações sobre as dosagens recomendadas para medicamentos. Inclui detalhes como a quantidade e frequência de administração.
+13.	Medicine (Medicamento): Armazena informações sobre os diferentes medicamentos disponíveis ou prescritos no sistema. Isso inclui o nome do medicamento, informações relacionadas e potenciais interações
+
+7.	Proposta para Solução
+A MedAlert será uma aplicação para gerir o uso de medicamentos e tratamentos. Essa solução utiliza uma abordagem tecnológica abrangente, combinando o uso do Flutter para a aplicação móvel, uma API em Node.js com Express para comunicação com uma base de dados em PostgreSQL. Além disso, também pode incorporar tecnologias de Visão Artificial e/ou Inteligência Artificial para validar as imagens capturadas pelo telemóvel.
+Arquitetura Tecnológica:
+Flutter (Front-end):
+•	O Flutter será utilizado para desenvolver a UI do utilizador de forma intuitiva e amigável da aplicação. Este oferece um ambiente de desenvolvimento rápido, resultando numa aplicação móvel responsiva e compatível com múltiplas plataformas.
+PostgreSQL (Base de Dados):
+•	O PostgreSQL será a ferramenta para desenvolvimento da base de dados, escolhida devido à sua confiabilidade e capacidade de manipular grandes conjuntos de dados. Irá armazenar com segurança as informações dos pacientes, medicamentos, histórico de adesão e outras informações relevantes.
+SupaBase API (Back-end/API):
+•	A SupaBase será local onde será alocada a nossa base de dados, proporcionando uma plataforma robusta e segura para armazenar e gerir todas as informações essenciais, garantindo acesso rápido e eficiente aos dados.
+A flexibilidade e a facilidade de uso da API do Supabase, combinadas com as capacidades de design e desenvolvimento do Flutter, nos permitem criar aplicações móveis, proporcionando aos usuários finais uma boa experiência.
+Armazenamento de Imagem antes da ingestão:
+•	Cada utilizador terá a capacidade de tirar uma foto que será armazenada na base de dados, permitindo uma avaliação futura da ingestão dos medicamentos, garantindo assim o cumprimento do plano de tratamento

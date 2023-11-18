@@ -7,6 +7,18 @@ const String supabaseKey =
 
 final SupabaseClient supabase = SupabaseClient(supabaseUrl, supabaseKey);
 
+class CreateUserResponse {
+  final bool success;
+  final dynamic data;
+  final String? errorMessage;
+
+  CreateUserResponse({
+    required this.success,
+    this.data,
+    this.errorMessage,
+  });
+}
+
 Future<bool> checkSupabaseConnection() async {
   try {
     // Tente fazer uma operação autenticada. Você pode substituir isso por qualquer operação válida.
@@ -50,5 +62,57 @@ Future<bool> dbCheckEmailValid(String email) async {
     }
   } catch (e) {
     return false;
+  }
+}
+
+Future<CreateUserResponse> createUser({
+  required String? email,
+  required String? password,
+  required int? healthNumber,
+  required String? firstName,
+  required String? lastName,
+  required String? birthDate,
+  required String? gender,
+  required String? phoneNumber,
+  required String? address,
+  required int? doorNumber,
+  int? floorNumber, // Opcional, já que pode ser nulo
+  required String? zipCode,
+}) async {
+  try {
+    final response = await supabase.rpc('create_user', params: {
+      '_email': email,
+      '_password': password,
+      '_health_number': healthNumber,
+      '_first_name': firstName,
+      '_last_name': lastName,
+      '_birth_date': birthDate,
+      '_gender': gender,
+      '_phone_number': phoneNumber,
+      '_address': address,
+      '_door_number': doorNumber,
+      '_floor_number': floorNumber,
+      '_zip_code': zipCode,
+    }).execute();
+
+    //Sucesso
+    if (response.error == null) {
+      return CreateUserResponse(
+        success: true,
+        data: response.data,
+      );
+    } else {
+      // Falha, com mensagem de erro
+      return CreateUserResponse(
+        success: false,
+        errorMessage: response.error?.message,
+      );
+    }
+  } catch (e) {
+    // Falha, com exceção capturada
+    return CreateUserResponse(
+      success: false,
+      errorMessage: e.toString(),
+    );
   }
 }

@@ -13,27 +13,7 @@ START 1;
 
 CREATE TYPE status_type AS ENUM (
    'Ativo', 'Desativo');
-
--- Tabela User
-CREATE TABLE IF NOT EXISTS "User" (
-	id_user BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('user_sequence'::regclass),
-    username VARCHAR UNIQUE NOT NULL,
-    email VARCHAR UNIQUE NOT NULL,
-    password VARCHAR NOT NULL,
-    health_number BIGINT UNIQUE NOT NULL,
-    status status_type NOT NULL
-);
-
--- =======================
--- END: USERS
--- =======================
-
-
-
--- =======================
--- START: USERS_INFOS
--- =======================
-
+   
 -- Gender
 -- 1:Masculino
 -- 2:Feminimo
@@ -43,27 +23,28 @@ CREATE TYPE gender_type AS ENUM (
    'Masculino', 'Feminimo', 'Outro'
 );
 
--- Tabela UserInfos
-CREATE TABLE IF NOT EXISTS "UserInfos" (
-    id_user BIGINT NOT NULL,
-    first_name VARCHAR NOT NULL,
-    last_name VARCHAR NOT NULL,
-    birth_date DATE NOT NULL,
-    gender gender_type NOT NULL,
-    health_number BIGINT UNIQUE NOT NULL,
+
+-- Tabela User
+CREATE TABLE IF NOT EXISTS "User" (
+	id_user BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('user_sequence'::regclass),
     email VARCHAR UNIQUE NOT NULL,
-    phone_number BIGINT UNIQUE NOT NULL,
+    password VARCHAR NOT NULL,
+    health_number BIGINT UNIQUE NOT NULL,
+	first_name VARCHAR NOT NULL,
+    last_name VARCHAR NOT NULL,
+    birth_date VARCHAR NOT NULL,
+    gender gender_type NOT NULL,
+    phone_number VARCHAR NOT NULL,
 	address VARCHAR NOT NULL,
     door_number BIGINT NOT NULL,
     floor_number BIGINT,
     zip_code VARCHAR NOT NULL,
-    FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE
+    status status_type NOT NULL
 );
 
 -- =======================
--- END: USERS_INFOS
+-- END: USERS
 -- =======================
-
 
 
 -- =======================

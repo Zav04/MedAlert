@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import '../Controller/PasswordField.dart';
 import 'ForgotPassWord.dart';
+import 'CreateUser.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
-              child: PasswordField(),
+              child: PasswordField(controller: _passwordController),
             ),
             const Gap(10),
             TextButton(
@@ -91,8 +93,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextButton(
               onPressed: () {
-                //TODO: Criação de novo utilizador
-                print('Precionado');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const CreateUser()));
               },
               child: const Text(
                 'Novo Utilizador? Criar conta',
