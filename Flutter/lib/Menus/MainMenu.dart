@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import '../Class/Class_User.dart';
 import '../Class/Class_MedicalPrescription.dart';
 import '../Controller/DataBaseConection.dart';
+import '../Widgets/Cards.dart';
+import 'package:gap/gap.dart';
 
 class MainMenu extends StatefulWidget {
   final User user;
@@ -15,6 +17,7 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
   late DateTime _selectedDay; // Dia selecionado
   late DateTime _focusedDay; // Dia que o calendário está focando
+  List<Appointment> appointmentMedication = [];
   @override
   void initState() {
     super.initState();
@@ -37,18 +40,20 @@ class _MainMenuState extends State<MainMenu> {
             firstDay: DateTime.utc(1999, 01, 01),
             lastDay: DateTime.utc(2999, 12, 31),
             focusedDay: _focusedDay,
+            calendarFormat: CalendarFormat.week,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay; // Atualiza o dia selecionado
-                _focusedDay = focusedDay; // Atualiza o dia focado
-              });
+              if (!isSameDay(_selectedDay, selectedDay)) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay =
+                      focusedDay; // update `_focusedDay` here if this is also intended
+                });
+              }
             },
             onPageChanged: (focusedDay) {
-              // Atualiza apenas o dia focado
               _focusedDay = focusedDay;
             },
-            calendarFormat: CalendarFormat.week,
             calendarStyle: const CalendarStyle(
               todayDecoration: BoxDecoration(
                 color: Colors.orange,
@@ -107,23 +112,39 @@ class _MainMenuState extends State<MainMenu> {
               }
             }),
           ),
+          const Gap(10),
           Expanded(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                //Preciso de um butão para carregar a lista de medicamentos
-                children: [
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      fetchAppointments(widget.user.userId);
-                    },
-                    child: const Text('Carregar lista de medicamentos'),
+            child: ListView.builder(
+              itemCount: appointmentMedication.length,
+              itemBuilder: (context, index) {
+                return MedicationCard(
+                  cardMedication: CardMedication(
+                    nomdeMedicamento:
+                        appointmentMedication![index].nomeDoMedicamento,
+                    dosagem: appointmentMedication![index].dosagem,
+                    status: appointmentMedication![index].status,
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ),
+          // Expanded(
+          //   child: Center(
+          //     child: Column(
+          //       mainAxisSize: MainAxisSize.min,
+          //       //Preciso de um butão para carregar a lista de medicamentos
+          //       children: [
+          //         const SizedBox(height: 10),
+          //         ElevatedButton(
+          //           onPressed: () {
+          //             fetchAppointments(widget.user.userId);
+          //           },
+          //           child: const Text('Carregar lista de medicamentos'),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -146,6 +167,16 @@ class _MainMenuState extends State<MainMenu> {
 
   void fetchAppointments(int userId) async {
     var result = await getMedication(userId);
-    appointmentMedication = result.data;
+    if (result.data is List) {
+      setState(() {
+        appointmentMedication = result.data
+            .map<Appointment>((item) => Appointment.fromJson(item))
+            .toList();
+      });
+    } else {
+      setState(() {
+        appointmentMedication = [];
+      });
+    }
   }
 }

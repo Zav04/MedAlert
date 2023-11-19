@@ -224,6 +224,13 @@ CREATE SEQUENCE IF NOT EXISTS medicalprescription_sequence
 INCREMENT 1
 START 1;
 
+
+-- prescription_status
+-- 0:Concluído
+-- 1:Em andamento
+-- 2:Cancelado
+
+
 -- Tabela Medical Prescription
 CREATE TABLE IF NOT EXISTS "MedicalPrescription" (
     id_medical_prescription BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('medicalprescription_sequence'::regclass),
