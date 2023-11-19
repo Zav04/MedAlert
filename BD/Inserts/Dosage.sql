@@ -1,0 +1,22 @@
+INSERT INTO "Dosage" (dosage_time, dosage_amount,dosage_note) VALUES
+(24, 1,'Uma vez por dia, 1 comprimido'),
+(12, 2,'Duas vezes por dia, 2 comprimidos') ,
+(8, 1, 'Três vezes por dia, 1 comprimido'),
+(6, 0.5, 'Quatro vezes por dia, meio comprimido'),
+(24, 1, 'Uma vez por dia, 1 comprimido'),
+(12, 1,'Duas vezes por dia, 1 comprimido'),
+(8, 1.5,'Três vezes por dia, 1 e meio comprimidos'),
+(6, 1, 'Quatro vezes por dia, 1 comprimido'),
+(24, 2, 'Uma vez por dia, 2 comprimidos'),
+(12, 1, 'Duas vezes por dia, 1 comprimido'),
+(8, 0.5,'Três vezes por dia, meio comprimido'),
+(6, 2,'Quatro vezes por dia, 2 comprimidos'),
+(24, 1, 'Uma vez por dia, 1 comprimido'),
+(12, 0.5, 'Duas vezes por dia, meio comprimido'),
+(8, 2, 'Três vezes por dia, 2 comprimidos'),
+(6, 1.5,'Quatro vezes por dia, 1 e meio comprimidos'),
+(24, 1, 'Uma vez por dia, 1 comprimido'),
+(12, 1, 'Duas vezes por dia, 1 comprimido'),
+(8, 0.5, 'Três vezes por dia, meio comprimido'),
+(6, 1,  'Quatro vezes por dia, 1 comprimido');
+

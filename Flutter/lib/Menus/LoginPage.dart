@@ -3,6 +3,10 @@ import 'package:gap/gap.dart';
 import '../Controller/PasswordField.dart';
 import 'ForgotPassWord.dart';
 import 'CreateUser.dart';
+import '../Class/Class_User.dart';
+import '../Controller/DataBaseConection.dart';
+import '../Overlay/Overlay.dart';
+import '../Controller/ChangePageOverlay.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,8 +15,10 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with ErrorMessageOverlayMixin {
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  User validUser = User(userId: 0);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -49,12 +55,13 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const Gap(40),
-                const Padding(
+                Padding(
                   //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: TextField(
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Email',
                         hintText: 'Insira um e-mail válido como abc@gmail.com'),
@@ -87,8 +94,23 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(20)),
                   child: ElevatedButton(
-                    onPressed: () {
-                      //TODO fazer o backend para validar se existe
+                    onPressed: () async {
+                      var validation = await login(
+                          email: _emailController.text,
+                          password: _passwordController.text);
+                      if (validation.success == true) {
+                        int id = await getId(_emailController.text);
+                        validUser.userId = id;
+                        showErrorMessageOverlay("Login efetuado com Sucesso", 2,
+                            action: ChangeToMainMenu(user: validUser));
+                      } else {
+                        if (validation.errorMessage == null) {
+                          showErrorMessageOverlay("Credenciais Invalidas", 1);
+                        } else {
+                          showErrorMessageOverlay(
+                              validation.errorMessage.toString(), 1);
+                        }
+                      }
                     },
                     child: const Text(
                       'Login',

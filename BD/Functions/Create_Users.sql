@@ -1,33 +1,3 @@
---VALIDAR CONNECÇÃO COM A BASE DE DADOS
-CREATE OR REPLACE FUNCTION is_connected() 
-RETURNS BOOLEAN AS $$
-BEGIN
-  RETURN TRUE;
-END;
-$$ LANGUAGE plpgsql;
-
---Validar se existe email na base de dados
-CREATE OR REPLACE FUNCTION email_exists(input_email VARCHAR)
-RETURNS BOOLEAN AS $$
-DECLARE
-    exists BOOLEAN;
-BEGIN
-    SELECT EXISTS(SELECT 1 FROM "User" WHERE email = input_email) INTO exists;
-    RETURN exists;
-END;
-$$ LANGUAGE plpgsql;
-
---Validar se o email é valido para a base de dados
-CREATE OR REPLACE FUNCTION is_email_valid(email VARCHAR) 
-RETURNS BOOLEAN AS $$
-BEGIN
-  RETURN email ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-END;
-$$ LANGUAGE plpgsql;
-
-
-
-
 CREATE OR REPLACE FUNCTION create_user(
 	_email VARCHAR,
       _password VARCHAR,
@@ -40,10 +10,12 @@ CREATE OR REPLACE FUNCTION create_user(
       _address VARCHAR,
       _door_number BIGINT,
       _floor_number BIGINT,
-      _zip_code VARCHAR)
-RETURNS VOID AS $$
+      _zip_code VARCHAR,
+	  _role role)
+RETURNS BOOLEAN AS $$
 DECLARE
     _id_user BIGINT;
+	_status VARCHAR;
 BEGIN
 
 
@@ -93,6 +65,8 @@ BEGIN
         RAISE EXCEPTION 'Password é um campo obrigatorio.';
     END IF;
 	
+	 _password:=crypt(create_user._password, gen_salt('bf', 10));
+	
 	IF _gender IS NULL THEN
         RAISE EXCEPTION 'Genero é um campo obrigatorio.';
     END IF;
@@ -132,6 +106,16 @@ BEGIN
 	IF _zip_code='0000-000' or _zip_code NOT SIMILAR TO '[0-9]{4}-[0-9]{3}' THEN
         RAISE EXCEPTION 'Codigo de Postal Invalido.';
     END IF;
+	
+	IF _role IS NULL or _zip_code='-' THEN
+        RAISE EXCEPTION 'Codigo de Postal é um campo obrigatorio.';
+    END IF;
+	
+
+IF(_role='NotAplied') THEN
+_status='Desativo';
+END IF;
+
    
 -- Insere na tabela User
 INSERT INTO "User" (email, password, health_number, 
@@ -144,26 +128,39 @@ VALUES (_email,_password,_health_number,
 		_door_number,_floor_number,_zip_code,'Ativo')
 RETURNING id_user INTO _id_user;
 
+INSERT INTO "UserRole" (role,id_user) VALUES(_role,_id_user);
+
+IF(_role='Admin') THEN
+INSERT INTO "Admin" (id_user) 
+VALUES (_id_user);
+END IF;
+
+IF(_role='Doctor') THEN
+INSERT INTO "Medic" (id_user) 
+VALUES (_id_user);
+END IF;
+
+IF(_role='HealthCare') THEN
+INSERT INTO "HealthCare" (id_user) 
+VALUES (_id_user);
+END IF;
+
+IF(_role='Pacient') THEN
+INSERT INTO "Patient" (id_user) 
+VALUES (_id_user);
+END IF;
+
+IF(_role='Family') THEN
+INSERT INTO "Family" (id_user) 
+VALUES (_id_user);
+END IF;
+
+RETURN TRUE;
+
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT create_user('teste@example.com', 'password13', 123456789, 'Teste', 'Teste', '2001-11-10', 'Masculino', '915226207', 'Rua', Null, Null, Null);
 
 
-
-
-INSERT INTO "User" (email, password, health_number, first_name, last_name, birth_date, gender, phone_number, address, door_number, floor_number, zip_code, status) VALUES
-('email1@example.com', 'password1', 100000001, 'Nome1', 'Sobrenome1', '2000-01-01', 'Masculino', 900000001, 'Endereço 1', 101, 1, '1234-567', 'Ativo'),
-('email2@example.com', 'password2', 100000002, 'Nome2', 'Sobrenome2', '2000-01-02', 'Feminimo', 900000002, 'Endereço 2', 102, 2, '2345-678', 'Ativo'),
-('email3@example.com', 'password3', 100000003, 'Nome3', 'Sobrenome3', '2000-01-03', 'Masculino', 900000003, 'Endereço 3', 103, 3, '3456-789', 'Ativo'),
-('email4@example.com', 'password4', 100000004, 'Nome4', 'Sobrenome4', '2001-02-01', 'Masculino', 900000004, 'Endereço 4', 104, 4, '4567-890', 'Ativo'),
-('email5@example.com', 'password5', 100000005, 'Nome5', 'Sobrenome5', '2001-03-02', 'Feminimo', 900000005, 'Endereço 5', 105, 5, '5678-901', 'Ativo'),
-('email6@example.com', 'password6', 100000006, 'Nome6', 'Sobrenome6', '2001-04-03', 'Outro', 900000006, 'Endereço 6', 106, 6, '6789-012', 'Ativo'),
-('email7@example.com', 'password7', 100000007, 'Nome7', 'Sobrenome7', '2001-05-04', 'Masculino', 900000007, 'Endereço 7', 107, 7, '7890-123', 'Ativo'),
-('email8@example.com', 'password8', 100000008, 'Nome8', 'Sobrenome8', '2001-06-05', 'Feminimo', 900000008, 'Endereço 8', 108, 8, '8901-234', 'Ativo'),
-('email9@example.com', 'password9', 100000009, 'Nome9', 'Sobrenome9', '2001-07-06', 'Outro', 900000009, 'Endereço 9', 109, 9, '9012-345', 'Ativo'),
-('email10@example.com', 'password10', 100000010, 'Nome10', 'Sobrenome10', '2001-08-07', 'Masculino', 900000010, 'Endereço 10', 110, 10, '0123-456', 'Ativo'),
-('email11@example.com', 'password11', 100000011, 'Nome11', 'Sobrenome11', '2001-09-08', 'Feminimo', 900000011, 'Endereço 11', 111, 11, '1234-567', 'Ativo'),
-('email12@example.com', 'password12', 100000012, 'Nome12', 'Sobrenome12', '2001-10-09', 'Outro', 900000012, 'Endereço 12', 112, 12, '2345-678', 'Ativo'),
-('email13@example.com', 'password13', 100000013, 'Nome13', 'Sobrenome13', '2001-11-10', 'Masculino', 900000013, 'Endereço 13', 113, 13, '3456-789', 'Ativo');
+--SELECT create_user('bruno.bx04@gmail.com', 'admin', 123456789, 'Bruno', 'Oliveira', '2001-11-10', 'Masculino', '915226207', 'Rua', 537, Null, '4085-631','Admin');
 

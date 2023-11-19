@@ -33,6 +33,7 @@ class _CreateUserState extends State<CreateUser> with ErrorMessageOverlayMixin {
   final TextEditingController _floorNumberController = TextEditingController();
   final TextEditingController _zipCodeController = TextEditingController();
   String _selectedGender = 'Masculino';
+  String _selectedAcountType = 'Paciente';
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +156,36 @@ class _CreateUserState extends State<CreateUser> with ErrorMessageOverlayMixin {
                                   left: 0, right: 0, top: 10, bottom: 0),
                               child: PasswordField(
                                   controller: _passwordController),
+                            ),
+                            const Gap(10),
+                            DropdownButtonFormField<String>(
+                              value: _selectedAcountType,
+                              items: <String>[
+                                'Médico',
+                                'Paciente',
+                                'Profissional de Saude',
+                                'Familiar',
+                                'Administrador'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedAcountType = newValue!;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Tipo de Conta',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                // Removido suffixIcon: const Icon(Icons.arrow_drop_down),
+                              ),
                             ),
                             const Gap(10),
                             DropdownButtonFormField<String>(
@@ -299,6 +330,7 @@ class _CreateUserState extends State<CreateUser> with ErrorMessageOverlayMixin {
                                   zipCode: _zipCodeController.text.isNotEmpty
                                       ? _zipCodeController.text
                                       : null,
+                                  role: _selectedAcountType,
                                 );
                                 if (result.success == true) {
                                   showErrorMessageOverlay(

@@ -9,7 +9,6 @@ START 1;
 -- Status
 -- 1:Ativo
 -- 2:Desativo
--- 3:Outro
 
 CREATE TYPE status_type AS ENUM (
    'Ativo', 'Desativo');
@@ -63,7 +62,7 @@ CREATE TYPE role AS ENUM ('Admin', 'Doctor', 'HealthCare', 'Pacient', 'Family', 
 
 -- Tabela UserRole
 CREATE TABLE IF NOT EXISTS "UserRole" (
-    role role PRIMARY KEY NOT NULL,
+    role role NOT NULL,
     id_user BIGINT NOT NULL,
     FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE
 );
@@ -165,10 +164,11 @@ START 1;
 CREATE TABLE IF NOT EXISTS "Family" (
     id_family BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('family_sequence'::regclass),
     id_user BIGINT NOT NULL,
-    id_patient BIGINT NOT NULL,
+    id_patient BIGINT NULL,
     FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE,
     FOREIGN KEY (id_patient) REFERENCES "Patient" (id_patient) ON DELETE CASCADE
 );
+
 
 -- =======================
 -- END: FAMILY
@@ -187,7 +187,8 @@ START 1;
 CREATE TABLE IF NOT EXISTS "Dosage" (
     id_dosage BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('dosage_sequence'::regclass),
     dosage_time BIGINT NOT NULL,
-    dosage_amount BIGINT NOT NULL
+    dosage_amount BIGINT NOT NULL,
+	dosage_note VARCHAR NOT NULL
 );
 
 

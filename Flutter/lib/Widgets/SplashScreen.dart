@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SplashScreen extends StatelessWidget {
+  const SplashScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +30,7 @@ class SplashScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             LoadingAnimationWidget.bouncingBall(
-              color: Color.fromRGBO(62, 88, 143, 1.0),
+              color: const Color.fromRGBO(62, 88, 143, 1.0),
               size: 80,
             ),
             const SizedBox(height: 10),

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-//import 'dart:io' show Platform;
-import 'dart:io';
-
-import './Menus/SplashScreen.dart';
+import 'Widgets/SplashScreen.dart';
 import 'Controller/DataBaseConection.dart';
 import 'Warnings/NoDataBaseConnection.dart';
 import 'Menus/LoginPage.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // Importe o pacote de conectividade ou o pacote da sua base de dados
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MedAlert());
+
+  initializeDateFormatting('pt_PT', null).then((_) => runApp(const MedAlert()));
 }
 
 class MedAlert extends StatelessWidget {
@@ -24,9 +23,8 @@ class MedAlert extends StatelessWidget {
           future: checkSupabaseConnection(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return SplashScreen();
+              return const SplashScreen();
             } else if (snapshot.hasData && snapshot.data!) {
-              //TODO CHANGE TO MATERIAL  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()),);
               return const LoginPage();
             } else {
               return NoConnectionWidget(
@@ -39,10 +37,5 @@ class MedAlert extends StatelessWidget {
         ),
       ),
     );
-  }
-
-//isto para a main thread tem de ser async, senão for para a main thread
-  void synchronousSleep(int timetoDelay) {
-    sleep(Duration(seconds: timetoDelay));
   }
 }
