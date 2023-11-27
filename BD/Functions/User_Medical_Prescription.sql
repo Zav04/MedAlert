@@ -7,7 +7,9 @@ RETURNS TABLE (
     medic_name VARCHAR,
     emission_date DATE,
     prescription_status BIGINT,
-    dt_valid DATE
+    dt_valid DATE,
+	dt_start DATE,
+	dt_end DATE
 ) AS $$
 BEGIN
     IF _user_id IS NULL THEN
@@ -22,7 +24,9 @@ BEGIN
         CAST(mp.medic_name AS VARCHAR) AS medic_name, -- Cast to VARCHAR if needed
         mp.emission_date,
         mp.prescription_status,
-        mp.dt_valid
+        mp.dt_valid,
+		mp.dt_start,
+		mp.dt_end
     FROM
         "MedicalPrescription" mp
     JOIN "User" u ON mp.id_user = u.id_user
@@ -32,3 +36,4 @@ BEGIN
         mp.id_user = _user_id;
 END;
 $$ LANGUAGE plpgsql;
+

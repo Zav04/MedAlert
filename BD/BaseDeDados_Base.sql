@@ -229,6 +229,7 @@ START 1;
 -- 0:Concluído
 -- 1:Em andamento
 -- 2:Cancelado
+-- 3:Iniciar
 
 
 -- Tabela Medical Prescription
@@ -241,10 +242,14 @@ CREATE TABLE IF NOT EXISTS "MedicalPrescription" (
     emission_date DATE NOT NULL,
     prescription_status BIGINT NOT NULL,
     dt_valid DATE NOT NULL,
+	dt_start DATE NOT NULL,
+	dt_end DATE NOT NULL,
     FOREIGN KEY (id_user) REFERENCES "User" (id_user) ON DELETE CASCADE,
     FOREIGN KEY (id_dosage) REFERENCES "Dosage" (id_dosage) ON DELETE CASCADE,
     FOREIGN KEY (id_medicine) REFERENCES "Medicine" (id_medicine) ON DELETE CASCADE
 );
+
+
 
 -- =======================
 -- END: MEDICAL PRESCRIPTION

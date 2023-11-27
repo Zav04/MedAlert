@@ -29,6 +29,7 @@ class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFE8ECF9),
       appBar: AppBar(
         title: const Text('MedAlert'),
         centerTitle: true,
@@ -46,9 +47,9 @@ class _MainMenuState extends State<MainMenu> {
               if (!isSameDay(_selectedDay, selectedDay)) {
                 setState(() {
                   _selectedDay = selectedDay;
-                  _focusedDay =
-                      focusedDay; // update `_focusedDay` here if this is also intended
+                  _focusedDay = focusedDay;
                 });
+                updateSelectedDayAppointments(selectedDay);
               }
             },
             onPageChanged: (focusedDay) {
@@ -115,36 +116,20 @@ class _MainMenuState extends State<MainMenu> {
           const Gap(10),
           Expanded(
             child: ListView.builder(
-              itemCount: appointmentMedication.length,
+              itemCount: selectedDayAppointments.length,
               itemBuilder: (context, index) {
+                final appointment = selectedDayAppointments[index];
                 return MedicationCard(
                   cardMedication: CardMedication(
-                    nomdeMedicamento:
-                        appointmentMedication![index].nomeDoMedicamento,
-                    dosagem: appointmentMedication![index].dosagem,
-                    status: appointmentMedication![index].status,
+                    nomdeMedicamento: appointment.nomeDoMedicamento,
+                    dosagem: appointment.dosagem,
+                    status: appointment.status,
                   ),
+                  appointment: appointment,
                 );
               },
             ),
           ),
-          // Expanded(
-          //   child: Center(
-          //     child: Column(
-          //       mainAxisSize: MainAxisSize.min,
-          //       //Preciso de um butão para carregar a lista de medicamentos
-          //       children: [
-          //         const SizedBox(height: 10),
-          //         ElevatedButton(
-          //           onPressed: () {
-          //             fetchAppointments(widget.user.userId);
-          //           },
-          //           child: const Text('Carregar lista de medicamentos'),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -178,5 +163,42 @@ class _MainMenuState extends State<MainMenu> {
         appointmentMedication = [];
       });
     }
+  }
+
+  void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+      });
+      // Certifique-se de que esta função atualiza a lista de eventos para o novo dia selecionado.
+      updateSelectedDayAppointments(selectedDay);
+    }
+  }
+
+  bool isDateInRange(DateTime date, String start, String end) {
+    DateTime startDate = DateTime.parse(start);
+    DateTime endDate = DateTime.parse(end);
+    return date.isAfter(startDate) && date.isBefore(endDate);
+  }
+
+  List<Appointment> selectedDayAppointments = [];
+
+  void updateSelectedDayAppointments(DateTime day) {
+    List<Appointment> filteredAppointments =
+        appointmentMedication.where((appointment) {
+      DateTime startDate = DateTime.parse(appointment.dataDeincio);
+      DateTime endDate = DateTime.parse(appointment.dataDeFim);
+      // Inclui o dia de início e o dia de fim no intervalo.
+      bool isOnOrAfterStart =
+          day.isAtSameMomentAs(startDate) || day.isAfter(startDate);
+      bool isOnOrBeforeEnd = day.isAtSameMomentAs(endDate) ||
+          day.isBefore(endDate.add(const Duration(days: 1)));
+      return isOnOrAfterStart && isOnOrBeforeEnd;
+    }).toList();
+
+    setState(() {
+      selectedDayAppointments = filteredAppointments;
+    });
   }
 }
