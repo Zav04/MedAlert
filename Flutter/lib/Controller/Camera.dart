@@ -1,14 +1,23 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import '../Overlay/Overlay.dart';
+import 'dart:io';
 
 class CameraScreen extends StatefulWidget {
+  final Function(String) onImageCaptured;
+
+  CameraScreen({Key? key, required this.onImageCaptured}) : super(key: key);
+
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _CameraScreenState extends State<CameraScreen>
+    with ErrorMessageOverlayMixin {
   CameraController? controller;
   List<CameraDescription>? cameras;
+  bool isPictureTaken = false;
+  String? lastImagePath;
 
   @override
   void initState() {
@@ -17,21 +26,20 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> initCamera() async {
-    cameras = await availableCameras();
-    CameraDescription rearCamera = cameras!.firstWhere(
-      (camera) => camera.lensDirection == CameraLensDirection.back,
-    );
+    try {
+      cameras = await availableCameras();
+      CameraDescription rearCamera = cameras!.firstWhere(
+        (camera) => camera.lensDirection == CameraLensDirection.back,
+      );
 
-    controller = CameraController(
-      rearCamera,
-      ResolutionPreset.max,
-    );
-
-    await controller!.initialize();
-    if (!mounted) {
-      return;
+      controller = CameraController(rearCamera, ResolutionPreset.max);
+      await controller!.initialize();
+      if (!mounted) return;
+      setState(() {});
+    } catch (e) {
+      print(e.toString()); // Isso vai imprimir o erro específico
+      // Aqui você pode adicionar mais lógica de tratamento de erro
     }
-    setState(() {});
   }
 
   @override
@@ -47,36 +55,51 @@ class _CameraScreenState extends State<CameraScreen> {
 
     try {
       final XFile file = await controller!.takePicture();
-      print('Picture saved to ${file.path}');
+      setState(() {
+        isPictureTaken = true; // Altera o estado para mostrar o botão de enviar
+        lastImagePath = file.path; // Armazena o caminho da imagem
+      });
+      widget.onImageCaptured(file.path); // Callback com o caminho da imagem
     } catch (e) {
-      print(e);
+      // Handle the error appropriately here
+      showErrorMessageOverlay(e.toString(), 1);
     }
+  }
+
+  void sendPicture() {
+    // Implemente a lógica para enviar a imagem
+    // Exemplo: Upload da imagem para um servidor
+
+    // Após o envio da imagem, redefina o estado para permitir tirar outra foto
+    setState(() {
+      isPictureTaken = false; // Reseta o estado para mostrar o botão da câmera
+      lastImagePath = null; // Limpa o caminho da última imagem
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null || !controller!.value.isInitialized) {
-      return Container();
-    }
-
-    // Usando Stack para sobrepor o botão sobre a CameraPreview
     return Scaffold(
       body: Stack(
-        fit: StackFit
-            .expand, // Faz com que os filhos da Stack se expandam para preencher o espaço disponível
+        fit: StackFit.expand,
         children: [
-          CameraPreview(controller!), // Removido o widget Expanded
-          Positioned(
-            bottom: 20.0,
-            right: 20.0,
-            left: 20.0,
-            child: FloatingActionButton(
+          if (controller != null && controller!.value.isInitialized)
+            CameraPreview(controller!)
+          else
+            const Center(child: CircularProgressIndicator()),
+          // ... outros widgets ...
+        ],
+      ),
+      floatingActionButton: isPictureTaken
+          ? FloatingActionButton(
+              onPressed: sendPicture,
+              child: const Icon(Icons.send),
+            )
+          : FloatingActionButton(
               onPressed: takePicture,
               child: const Icon(Icons.camera_alt),
             ),
-          ),
-        ],
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

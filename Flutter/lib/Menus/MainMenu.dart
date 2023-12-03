@@ -24,6 +24,7 @@ class _MainMenuState extends State<MainMenu> {
     _selectedDay = DateTime.now(); // Inicializa com o dia atual
     _focusedDay = _selectedDay;
     fetchAppointments(widget.user.userId); // Inicializa com o dia atual
+    updateSelectedDayAppointments(_selectedDay);
   }
 
   @override
@@ -157,10 +158,14 @@ class _MainMenuState extends State<MainMenu> {
         appointmentMedication = result.data
             .map<Appointment>((item) => Appointment.fromJson(item))
             .toList();
+        // Atualiza os compromissos para o dia selecionado após carregar os dados
+        updateSelectedDayAppointments(_selectedDay);
       });
     } else {
       setState(() {
         appointmentMedication = [];
+        // Ainda precisa atualizar para garantir que a lista esteja vazia se não houver dados
+        updateSelectedDayAppointments(_selectedDay);
       });
     }
   }

@@ -20,10 +20,14 @@ class MedicationCard extends StatefulWidget {
 
 class _MedicationCard extends State<MedicationCard> {
   bool isExpanded = false;
+  String imagePath = '';
 
   void _openCamera() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => CameraScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(onImageCaptured: onImageCaptured),
+      ),
+    );
   }
 
   @override
@@ -56,9 +60,9 @@ class _MedicationCard extends State<MedicationCard> {
     Widget trailingWidget = (widget.cardMedication.status == 3)
         ? ElevatedButton(
             onPressed: _openCamera,
-            child: const Icon(Icons.camera_alt),
+            child: Icon(Icons.camera_alt),
             style: ElevatedButton.styleFrom(
-              primary: statusColor, // Cor de fundo do botão
+              backgroundColor: statusColor, // Cor de fundo do botão
             ),
           )
         : Container(
@@ -146,5 +150,11 @@ class _MedicationCard extends State<MedicationCard> {
   String formatDate(String dateString) {
     DateTime date = DateTime.parse(dateString);
     return DateFormat('dd/MM/yyyy').format(date);
+  }
+
+  void onImageCaptured(String imagePath) {
+    setState(() {
+      this.imagePath = imagePath;
+    });
   }
 }
