@@ -28,14 +28,21 @@ class MedAlert extends StatelessWidget {
               return const LoginPage();
             } else {
               return NoConnectionWidget(
-                tryAgainAction: () {
-                  checkSupabaseConnection();
-                },
+                tryAgainAction: () => tryAgain(context),
               );
             }
           },
         ),
       ),
     );
+  }
+
+  // Função assíncrona separada para tentar novamente
+  void tryAgain(BuildContext context) async {
+    bool tryagain = await checkSupabaseConnection();
+    if (tryagain) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const MedAlert()));
+    }
   }
 }

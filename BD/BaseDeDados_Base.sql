@@ -267,9 +267,9 @@ START 1;
 CREATE TABLE IF NOT EXISTS "HistoricMedicalPrescription" (
     id_historic_medical_prescription BIGINT PRIMARY KEY NOT NULL DEFAULT NEXTVAL('historicmedicalprescription_sequence'::regclass),
     id_medical_prescription BIGINT NOT NULL,
-    date DATE NOT NULL,
-    validation BOOLEAN NOT NULL,
-    image_validation VARCHAR,
+    date TIMESTAMP NOT NULL,
+    validation BOOLEAN DEFAULT NULL,
+    image_data BYTEA,
     FOREIGN KEY (id_medical_prescription) REFERENCES "MedicalPrescription" (id_medical_prescription) ON DELETE CASCADE
 );
 
