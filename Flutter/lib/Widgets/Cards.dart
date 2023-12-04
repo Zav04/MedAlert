@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import '../Class/Class_MedicalPrescription.dart';
 import 'package:intl/intl.dart';
 import '../Controller/Camera.dart';
-
-import 'package:image_picker/image_picker.dart';
+import '../Menus/MainMenu.dart';
 
 class MedicationCard extends StatefulWidget {
   final CardMedication cardMedication;
   final Appointment appointment;
+  final bool isToday;
+  final VoidCallback onUpdated; // Adiciona o callback aqui
 
   MedicationCard({
     Key? key,
     required this.cardMedication,
     required this.appointment,
+    this.isToday = false,
+    required this.onUpdated, // Torna o callback um parâmetro obrigatório
   }) : super(key: key);
+
   @override
   State<MedicationCard> createState() => _MedicationCard();
 }
@@ -22,18 +26,26 @@ class _MedicationCard extends State<MedicationCard> {
   bool isExpanded = false;
   String imagePath = '';
 
-  void _openCamera() {
-    Navigator.of(context).push(
+  void _openCamera() async {
+    final result = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => CameraScreen(onImageCaptured: onImageCaptured),
+        builder: (context) => CameraScreen(
+          onImageCaptured: onImageCaptured,
+          medicalAppointments: widget.appointment,
+        ),
       ),
     );
+
+    if (result == true) {
+      widget.onUpdated(); // Chama o callback
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     String statusText;
     Color statusColor;
+    Widget trailingWidget;
 
     switch (widget.cardMedication.status) {
       case 0:
@@ -49,34 +61,35 @@ class _MedicationCard extends State<MedicationCard> {
         statusColor = Colors.red;
         break;
       case 3:
-        statusText = 'Iniciar';
+        statusText = 'Não Iniciado';
         statusColor = Colors.grey;
         break;
       default:
-        statusText = 'Iniciar';
+        statusText = 'Não Iniciado';
         statusColor = Colors.grey;
     }
 
-    Widget trailingWidget = (widget.cardMedication.status == 3)
-        ? ElevatedButton(
-            onPressed: _openCamera,
-            child: Icon(Icons.camera_alt),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: statusColor, // Cor de fundo do botão
-            ),
-          )
-        : Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-            decoration: BoxDecoration(
-              color: statusColor,
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            child: Text(
-              statusText,
-              style: const TextStyle(color: Colors.white),
-            ),
-          );
+    if (widget.cardMedication.status == 3 && widget.isToday) {
+      trailingWidget = ElevatedButton(
+        onPressed: () => _openCamera(),
+        child: const Icon(Icons.camera_alt),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: statusColor, // Cor de fundo do botão
+        ),
+      );
+    } else {
+      trailingWidget = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        decoration: BoxDecoration(
+          color: statusColor,
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Text(
+          statusText,
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
+    }
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -156,5 +169,15 @@ class _MedicationCard extends State<MedicationCard> {
     setState(() {
       this.imagePath = imagePath;
     });
+  }
+
+  bool isWithinMedicationPeriod(String startDateString, String endDateString) {
+    DateTime startDate = DateTime.parse(startDateString);
+    DateTime endDate = DateTime.parse(endDateString);
+    DateTime today = DateTime.now();
+
+    // Verifica se a data atual está entre as datas de início e fim
+    return today.isAfter(startDate.subtract(const Duration(days: 1))) &&
+        today.isBefore(endDate.add(const Duration(days: 1)));
   }
 }

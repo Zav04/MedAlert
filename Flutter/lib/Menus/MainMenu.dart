@@ -117,19 +117,20 @@ class _MainMenuState extends State<MainMenu> {
           const Gap(10),
           Expanded(
             child: ListView.builder(
-              itemCount: selectedDayAppointments.length,
-              itemBuilder: (context, index) {
-                final appointment = selectedDayAppointments[index];
-                return MedicationCard(
-                  cardMedication: CardMedication(
-                    nomdeMedicamento: appointment.nomeDoMedicamento,
-                    dosagem: appointment.dosagem,
-                    status: appointment.status,
-                  ),
-                  appointment: appointment,
-                );
-              },
-            ),
+                itemCount: selectedDayAppointments.length,
+                itemBuilder: (context, index) {
+                  final appointment = selectedDayAppointments[index];
+                  return MedicationCard(
+                    cardMedication: CardMedication(
+                      nomdeMedicamento: appointment.nomeDoMedicamento,
+                      dosagem: appointment.dosagem,
+                      status: appointment.status,
+                    ),
+                    appointment: appointment,
+                    isToday: isSameDay(_selectedDay, DateTime.now()),
+                    onUpdated: onAppointmentUpdated, // Passa o callback aqui
+                  );
+                }),
           ),
         ],
       ),
@@ -143,7 +144,7 @@ class _MainMenuState extends State<MainMenu> {
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.white,
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
             label: 'Setting',
           ),
         ],
@@ -204,6 +205,13 @@ class _MainMenuState extends State<MainMenu> {
 
     setState(() {
       selectedDayAppointments = filteredAppointments;
+    });
+  }
+
+  void onAppointmentUpdated() {
+    setState(() {
+      fetchAppointments(widget.user.userId);
+      updateSelectedDayAppointments(_selectedDay);
     });
   }
 }

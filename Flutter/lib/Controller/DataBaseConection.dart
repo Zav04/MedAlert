@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../Class/ClassBDResponse.dart';
+import 'dart:typed_data';
 
 const String supabaseUrl = 'https://exaeozpjrqqzfrztgulf.supabase.co';
 const String supabaseKey =
@@ -176,6 +177,43 @@ Future<CreateDBResponse> login({
   try {
     final response = await supabase.rpc('verify_user_credentials',
         params: {'email': email, 'password': password}).execute();
+
+    //Sucesso
+    if (response.error == null && response.data == true) {
+      return CreateDBResponse(
+        success: true,
+        data: response.data,
+      );
+    } else {
+      // Falha, com mensagem de erro
+      return CreateDBResponse(
+        success: false,
+        errorMessage: response.error?.message,
+      );
+    }
+  } catch (e) {
+    // Falha, com exceção capturada
+    return CreateDBResponse(
+      success: false,
+      errorMessage: e.toString(),
+    );
+  }
+}
+
+Future<CreateDBResponse> createHistoricMedicalPrescription({
+  required int? idMedicalPrescription,
+  required String? date,
+  required bool? validation,
+  required Uint8List? imageValidation,
+}) async {
+  try {
+    final response =
+        await supabase.rpc('create_historic_medical_prescription', params: {
+      '_id_medical_prescription': idMedicalPrescription,
+      '_date': date,
+      '_validation': validation,
+      '_image_data': imageValidation
+    }).execute();
 
     //Sucesso
     if (response.error == null && response.data == true) {
