@@ -2,134 +2,88 @@ import 'package:flutter/material.dart';
 import '../Class/Class_MedicalPrescription.dart';
 import 'package:intl/intl.dart';
 import '../Controller/Camera.dart';
-import '../Menus/MainMenu.dart';
+import '../Widgets/MedicationTimer.dart';
 
 class MedicationCard extends StatefulWidget {
-  final CardMedication cardMedication;
   final Appointment appointment;
   final bool isToday;
-  final VoidCallback onUpdated; // Adiciona o callback aqui
+  final VoidCallback onUpdated;
 
   MedicationCard({
     Key? key,
-    required this.cardMedication,
     required this.appointment,
     this.isToday = false,
-    required this.onUpdated, // Torna o callback um parâmetro obrigatório
+    required this.onUpdated,
   }) : super(key: key);
 
   @override
-  State<MedicationCard> createState() => _MedicationCard();
+  State<MedicationCard> createState() => _MedicationCardState();
 }
 
-class _MedicationCard extends State<MedicationCard> {
+class _MedicationCardState extends State<MedicationCard> {
   bool isExpanded = false;
-  String imagePath = '';
-
-  void _openCamera() async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => CameraScreen(
-          onImageCaptured: onImageCaptured,
-          medicalAppointments: widget.appointment,
-        ),
-      ),
-    );
-
-    if (result == true) {
-      widget.onUpdated(); // Chama o callback
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    // Definir status e cor
     String statusText;
     Color statusColor;
-    Widget trailingWidget;
-
-    switch (widget.cardMedication.status) {
-      case 0:
+    switch (widget.appointment.status) {
+      case 0: // Concluído
         statusText = 'Concluído';
         statusColor = Colors.green;
         break;
-      case 1:
+      case 1: // Em andamento
         statusText = 'Em andamento';
         statusColor = Colors.orange;
         break;
-      case 2:
+      case 2: // Cancelado
         statusText = 'Cancelado';
         statusColor = Colors.red;
         break;
-      case 3:
-        statusText = 'Não Iniciado';
-        statusColor = Colors.grey;
-        break;
-      default:
+      default: // Não iniciado ou outro status
         statusText = 'Não Iniciado';
         statusColor = Colors.grey;
     }
 
-    if (widget.cardMedication.status == 3 && widget.isToday) {
-      trailingWidget = ElevatedButton(
-        onPressed: () => _openCamera(),
-        child: const Icon(Icons.camera_alt),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: statusColor, // Cor de fundo do botão
-        ),
-      );
-    } else {
-      trailingWidget = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-        decoration: BoxDecoration(
-          color: statusColor,
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: Text(
-          statusText,
-          style: const TextStyle(color: Colors.white),
-        ),
-      );
-    }
+    // Configurar trailing widget
+    Widget trailingWidget = (widget.appointment.status == 3 && widget.isToday)
+        ? ElevatedButton(
+            onPressed: _openCamera,
+            child: const Icon(Icons.camera_alt),
+            style: ElevatedButton.styleFrom(backgroundColor: statusColor),
+          )
+        : Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+            decoration: BoxDecoration(
+              color: statusColor,
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child:
+                Text(statusText, style: const TextStyle(color: Colors.white)),
+          );
+
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       elevation: 4.0,
       child: ExpansionTile(
         title: Text(
-          widget.cardMedication.nomdeMedicamento,
-          style: const TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
+          widget.appointment.nomeDoMedicamento,
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
-        subtitle: !isExpanded
-            ? Text('Dosagem: ${widget.cardMedication.dosagem}')
-            : null,
+        // Alteração aqui: Condicional para mostrar o Timer ou a Dosagem
+        subtitle: !isExpanded && widget.appointment.timeToNextDoses != null
+            ? MedicationTimerWidget(
+                timeToNextDose: widget.appointment.timeToNextDoses!)
+            : (!isExpanded
+                ? Text('Dosagem: ${widget.appointment.dosagem}')
+                : null),
         leading: CircleAvatar(
           backgroundColor: Colors.grey[200],
           child: const Icon(Icons.medication, color: Colors.black54),
         ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildDetailRow('Dosagem:', widget.appointment.dosagem),
-                buildDetailRow(
-                    'Medicamento:', widget.appointment.nomeDoMedicamento),
-                buildDetailRow('Médico:', widget.appointment.nomeDoMedico),
-                buildDetailRow(
-                    'Emissão:', formatDate(widget.appointment.dataDeEmissao)),
-                buildDetailRow(
-                    'Validade:', formatDate(widget.appointment.dataDeValidade)),
-                buildDetailRow('Fim do Tratamento:',
-                    formatDate(widget.appointment.dataDeFim)),
-              ],
-            ),
-          ),
-        ],
+        children: _buildDetails(),
         onExpansionChanged: (expanded) {
           setState(() {
             isExpanded = expanded;
@@ -140,24 +94,56 @@ class _MedicationCard extends State<MedicationCard> {
     );
   }
 
+  List<Widget> _buildDetails() {
+    // Inicialize a lista de detalhes com todos os widgets comuns
+    List<Widget> details = [
+      buildDetailRow('Dosagem:', widget.appointment.dosagem),
+      buildDetailRow('Medicamento:', widget.appointment.nomeDoMedicamento),
+      buildDetailRow('Médico:', widget.appointment.nomeDoMedico),
+      buildDetailRow('Emissão:', formatDate(widget.appointment.dataDeEmissao)),
+      buildDetailRow(
+          'Validade:', formatDate(widget.appointment.dataDeValidade)),
+      buildDetailRow(
+          'Fim do Tratamento:', formatDate(widget.appointment.dataDeFim)),
+    ];
+
+    // Adicione o MedicationTimerWidget se timeToNextDoses não for nulo e o cartão estiver expandido
+    if (isExpanded && widget.appointment.timeToNextDoses != null) {
+      details.add(MedicationTimerWidget(
+          timeToNextDose: widget.appointment.timeToNextDoses!));
+    }
+
+    return details;
+  }
+
   Widget buildDetailRow(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(
+          left: 16.0, bottom: 8.0), // Adiciona um espaçamento à esquerda
       child: Row(
         children: [
-          Text(
-            '$title ',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Flexible(
-            child: Text(
-              value,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(
+              width:
+                  8.0), // Você pode adicionar um SizedBox para mais espaçamento entre o título e o valor
+          Flexible(child: Text(value, overflow: TextOverflow.ellipsis)),
         ],
       ),
     );
+  }
+
+  void _openCamera() async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(
+          onImageCaptured: onImageCaptured,
+          medicalAppointments: widget.appointment,
+        ),
+      ),
+    );
+    if (result == true) {
+      widget.onUpdated();
+    }
   }
 
   String formatDate(String dateString) {
@@ -166,9 +152,7 @@ class _MedicationCard extends State<MedicationCard> {
   }
 
   void onImageCaptured(String imagePath) {
-    setState(() {
-      this.imagePath = imagePath;
-    });
+    setState(() {});
   }
 
   bool isWithinMedicationPeriod(String startDateString, String endDateString) {

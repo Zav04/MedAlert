@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import '../Controller/DataBaseConection.dart';
 import '../Class/Class_MedicalPrescription.dart';
-import '../Menus/MainMenu.dart';
 
 class CameraScreen extends StatefulWidget {
   final Appointment medicalAppointments;

@@ -121,11 +121,6 @@ class _MainMenuState extends State<MainMenu> {
                 itemBuilder: (context, index) {
                   final appointment = selectedDayAppointments[index];
                   return MedicationCard(
-                    cardMedication: CardMedication(
-                      nomdeMedicamento: appointment.nomeDoMedicamento,
-                      dosagem: appointment.dosagem,
-                      status: appointment.status,
-                    ),
                     appointment: appointment,
                     isToday: isSameDay(_selectedDay, DateTime.now()),
                     onUpdated: onAppointmentUpdated, // Passa o callback aqui
@@ -155,30 +150,41 @@ class _MainMenuState extends State<MainMenu> {
   void fetchAppointments(int userId) async {
     var result = await getMedication(userId);
     if (result.data is List) {
+      List<Appointment> tempAppointmentMedication = result.data
+          .map<Appointment>((item) => Appointment.fromJson(item))
+          .toList();
+
+      DateTime? lastDoseTime;
+      int? dosageIntervalHours;
+
+      for (Appointment appointment in tempAppointmentMedication) {
+        var prescriptionResult = await getPrecription(appointment.idPrescricao);
+        if (prescriptionResult.data.isNotEmpty) {
+          Map<String, dynamic> prescriptionData = prescriptionResult.data[0];
+          if (prescriptionData.containsKey('last_date')) {
+            String dateTimeString = prescriptionData['last_date'];
+            lastDoseTime = DateTime.parse(dateTimeString);
+            // Utilize lastDoseTime conforme necessário
+          }
+          if (prescriptionData.containsKey('dosage_time')) {
+            dosageIntervalHours = prescriptionData['dosage_time'];
+            // Utilize dosageIntervalHours conforme necessário
+          }
+          // Inicializar TimeToNextDoses para o compromisso
+          appointment.initializeTimeToNextDoses(
+              lastDoseTime, dosageIntervalHours);
+        }
+      }
+
       setState(() {
-        appointmentMedication = result.data
-            .map<Appointment>((item) => Appointment.fromJson(item))
-            .toList();
-        // Atualiza os compromissos para o dia selecionado após carregar os dados
+        appointmentMedication = tempAppointmentMedication;
         updateSelectedDayAppointments(_selectedDay);
       });
     } else {
       setState(() {
         appointmentMedication = [];
-        // Ainda precisa atualizar para garantir que a lista esteja vazia se não houver dados
         updateSelectedDayAppointments(_selectedDay);
       });
-    }
-  }
-
-  void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
-      setState(() {
-        _selectedDay = selectedDay;
-        _focusedDay = focusedDay;
-      });
-      // Certifique-se de que esta função atualiza a lista de eventos para o novo dia selecionado.
-      updateSelectedDayAppointments(selectedDay);
     }
   }
 

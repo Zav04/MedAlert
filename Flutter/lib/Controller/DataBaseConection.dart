@@ -96,6 +96,33 @@ Future<CreateDBResponse> getMedication(int id) async {
   }
 }
 
+Future<CreateDBResponse> getPrecription(int idPrecription) async {
+  try {
+    final response = await supabase.rpc('get_latest_prescription_info',
+        params: {'_id_medical_prescription': idPrecription}).execute();
+
+    //Sucesso
+    if (response.error == null) {
+      return CreateDBResponse(
+        success: true,
+        data: response.data,
+      );
+    } else {
+      // Falha, com mensagem de erro
+      return CreateDBResponse(
+        success: false,
+        errorMessage: response.error?.message,
+      );
+    }
+  } catch (e) {
+    // Falha, com exceção capturada
+    return CreateDBResponse(
+      success: false,
+      errorMessage: e.toString(),
+    );
+  }
+}
+
 Future<CreateDBResponse> createUser({
   required String? email,
   required String? password,
