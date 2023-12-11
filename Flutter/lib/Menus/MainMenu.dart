@@ -6,6 +6,8 @@ import '../Class/Class_MedicalPrescription.dart';
 import '../Controller/DataBaseConection.dart';
 import '../Widgets/Cards.dart';
 import 'package:gap/gap.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../Widgets/Notification_Service.dart';
 
 class MainMenu extends StatefulWidget {
   final User user;
@@ -20,11 +22,11 @@ class _MainMenuState extends State<MainMenu> {
   List<Appointment> appointmentMedication = [];
   @override
   void initState() {
-    super.initState();
     _selectedDay = DateTime.now(); // Inicializa com o dia atual
     _focusedDay = _selectedDay;
     fetchAppointments(widget.user.userId); // Inicializa com o dia atual
     updateSelectedDayAppointments(_selectedDay);
+    super.initState();
   }
 
   @override
@@ -50,6 +52,7 @@ class _MainMenuState extends State<MainMenu> {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
                 });
+                onAppointmentUpdated();
                 updateSelectedDayAppointments(selectedDay);
               }
             },
@@ -214,7 +217,7 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-  void onAppointmentUpdated() {
+  void onAppointmentUpdated() async {
     setState(() {
       fetchAppointments(widget.user.userId);
       updateSelectedDayAppointments(_selectedDay);

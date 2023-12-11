@@ -4,11 +4,17 @@ import 'Controller/DataBaseConection.dart';
 import 'Warnings/NoDataBaseConnection.dart';
 import 'Menus/LoginPage.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../Widgets/Notification_Service.dart';
 
 // Importe o pacote de conectividade ou o pacote da sua base de dados
+final navigatorKey = GlobalKey<NavigatorState>();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotifications.init();
 
   initializeDateFormatting('pt_PT', null).then((_) => runApp(const MedAlert()));
 }

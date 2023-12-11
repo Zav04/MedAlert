@@ -4,8 +4,10 @@ import '../Class/Class_TimeToNextDoses.dart';
 
 class MedicationTimerWidget extends StatefulWidget {
   final TimeToNextDoses timeToNextDose;
+  final VoidCallback onTimeEnds;
 
-  MedicationTimerWidget({Key? key, required this.timeToNextDose})
+  MedicationTimerWidget(
+      {Key? key, required this.timeToNextDose, required this.onTimeEnds})
       : super(key: key);
 
   @override
@@ -14,6 +16,7 @@ class MedicationTimerWidget extends StatefulWidget {
 
 class _MedicationTimerWidgetState extends State<MedicationTimerWidget> {
   late Timer timer;
+  bool isZero = false;
 
   @override
   void initState() {
@@ -26,6 +29,9 @@ class _MedicationTimerWidgetState extends State<MedicationTimerWidget> {
     setState(() {
       // Aqui você recalcula o timeUntilNextDose baseado na hora atual
       // Você precisará ajustar essa lógica para o seu caso de uso específico
+      if (widget.timeToNextDose.timeUntilNextDose == Duration.zero) {
+        widget.onTimeEnds();
+      }
       widget.timeToNextDose.recalculateTimeUntilNextDose();
     });
   }
@@ -41,12 +47,24 @@ class _MedicationTimerWidgetState extends State<MedicationTimerWidget> {
     // Formata o Duration para um formato mais legível
     String formattedTime =
         formatDuration(widget.timeToNextDose.timeUntilNextDose);
+    if (widget.timeToNextDose.timeUntilNextDose == Duration.zero) {
+      isZero = true;
+    } else {
+      isZero = false;
+    }
 
     return Column(
       children: <Widget>[
         const Text('Tempo até a próxima dose:'),
-        Text(formattedTime,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          formattedTime,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: isZero
+                ? Colors.red
+                : Colors.black, // Texto fica vermelho se o tempo for zero
+          ),
+        ),
         // Outros elementos do widget, se necessário
       ],
     );

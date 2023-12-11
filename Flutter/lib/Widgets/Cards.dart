@@ -3,6 +3,7 @@ import '../Class/Class_MedicalPrescription.dart';
 import 'package:intl/intl.dart';
 import '../Controller/Camera.dart';
 import '../Widgets/MedicationTimer.dart';
+import '../Widgets/Notification_Service.dart';
 
 class MedicationCard extends StatefulWidget {
   final Appointment appointment;
@@ -22,7 +23,7 @@ class MedicationCard extends StatefulWidget {
 
 class _MedicationCardState extends State<MedicationCard> {
   bool isExpanded = false;
-
+  bool showNotificationButton = false;
   @override
   Widget build(BuildContext context) {
     // Definir status e cor
@@ -45,15 +46,36 @@ class _MedicationCardState extends State<MedicationCard> {
         statusText = 'Não Iniciado';
         statusColor = Colors.grey;
     }
+    bool isStatusThreeAndToday =
+        (widget.appointment.status == 3 && widget.isToday);
+
+    bool isStatusOneAndTimeZeroAndToday = (widget.appointment.status == 1 &&
+        widget.appointment.timeToNextDoses?.timeUntilNextDose ==
+            Duration.zero &&
+        widget.isToday);
+    if (widget.appointment.timeToNextDoses?.timeUntilNextDose != Duration.zero)
+      showNotificationButton = false;
 
     // Configurar trailing widget
-    Widget trailingWidget = (widget.appointment.status == 3 && widget.isToday)
-        ? ElevatedButton(
+    Widget trailingWidget = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (showNotificationButton && widget.isToday)
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            color: Colors.blue, // Ou outra cor que você preferir
+            onPressed: () {
+              notificationMedication();
+            },
+          ),
+        if (isStatusThreeAndToday || isStatusOneAndTimeZeroAndToday)
+          ElevatedButton(
             onPressed: _openCamera,
             child: const Icon(Icons.camera_alt),
             style: ElevatedButton.styleFrom(backgroundColor: statusColor),
-          )
-        : Container(
+          ),
+        if (!isStatusThreeAndToday && !isStatusOneAndTimeZeroAndToday)
+          Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
             decoration: BoxDecoration(
@@ -62,7 +84,9 @@ class _MedicationCardState extends State<MedicationCard> {
             ),
             child:
                 Text(statusText, style: const TextStyle(color: Colors.white)),
-          );
+          ),
+      ],
+    );
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -72,10 +96,13 @@ class _MedicationCardState extends State<MedicationCard> {
           widget.appointment.nomeDoMedicamento,
           style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
-        // Alteração aqui: Condicional para mostrar o Timer ou a Dosagem
-        subtitle: !isExpanded && widget.appointment.timeToNextDoses != null
+        subtitle: !isExpanded &&
+                widget.appointment.timeToNextDoses != null &&
+                widget.appointment.timeToNextDoses != Duration.zero &&
+                widget.isToday == true
             ? MedicationTimerWidget(
-                timeToNextDose: widget.appointment.timeToNextDoses!)
+                timeToNextDose: widget.appointment.timeToNextDoses!,
+                onTimeEnds: onTimeEnds)
             : (!isExpanded
                 ? Text('Dosagem: ${widget.appointment.dosagem}')
                 : null),
@@ -110,7 +137,8 @@ class _MedicationCardState extends State<MedicationCard> {
     // Adicione o MedicationTimerWidget se timeToNextDoses não for nulo e o cartão estiver expandido
     if (isExpanded && widget.appointment.timeToNextDoses != null) {
       details.add(MedicationTimerWidget(
-          timeToNextDose: widget.appointment.timeToNextDoses!));
+          timeToNextDose: widget.appointment.timeToNextDoses!,
+          onTimeEnds: onTimeEnds));
     }
 
     return details;
@@ -163,5 +191,23 @@ class _MedicationCardState extends State<MedicationCard> {
     // Verifica se a data atual está entre as datas de início e fim
     return today.isAfter(startDate.subtract(const Duration(days: 1))) &&
         today.isBefore(endDate.add(const Duration(days: 1)));
+  }
+
+  void onTimeEnds() {
+    setState(() {
+      showNotificationButton = true;
+    });
+  }
+
+  void notificationMedication() {
+    setState(() {
+      LocalNotifications.showNotification(
+          title: 'Não se es esqueça de continuar o tratamento',
+          body: widget.appointment.nomeDoMedicamento.toString() +
+              ' ' +
+              widget.appointment.dosagem.toString(),
+          payload: '');
+      widget.onUpdated();
+    });
   }
 }
