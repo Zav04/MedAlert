@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Class/Class_MedicalPrescription.dart';
+import '../Class/Class_Appointment.dart';
 import 'package:intl/intl.dart';
 import '../Controller/Camera.dart';
 import '../Widgets/MedicationTimer.dart';

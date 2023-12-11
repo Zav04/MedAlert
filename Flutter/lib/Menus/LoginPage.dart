@@ -101,8 +101,19 @@ class _LoginPageState extends State<LoginPage> with ErrorMessageOverlayMixin {
                       if (validation.success == true) {
                         int id = await getId(_emailController.text);
                         validUser.userId = id;
-                        showErrorMessageOverlay("Login efetuado com Sucesso", 2,
-                            action: ChangeToMainMenu(user: validUser));
+                        var role = await getUserRole(id);
+                        if (role.data.toString() == 'Family' ||
+                            role.data.toString() == 'Doctor' ||
+                            role.data.toString() == 'HealthCare') {
+                          showErrorMessageOverlay(
+                              "Login efetuado com Sucesso", 2,
+                              action:
+                                  ChangeToMainMenuInspector(user: validUser));
+                        } else {
+                          showErrorMessageOverlay(
+                              "Login efetuado com Sucesso", 2,
+                              action: ChangeToMainMenu(user: validUser));
+                        }
                       } else {
                         if (validation.errorMessage == null) {
                           showErrorMessageOverlay("Credenciais Invalidas", 1);

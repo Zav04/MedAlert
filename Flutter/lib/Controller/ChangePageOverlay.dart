@@ -2,6 +2,7 @@ import 'package:MedAlert/Menus/MainMenu.dart';
 import 'package:flutter/material.dart';
 import '../Menus/LoginPage.dart';
 import '../Class/Class_User.dart';
+import '../Menus/MainMenu_Inspection.dart';
 
 abstract class ErrorMessageAction {
   void execute(BuildContext context);
@@ -27,6 +28,20 @@ class ChangeToMainMenu implements ErrorMessageAction {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => MainMenu(user: user)),
+      (Route<dynamic> route) =>
+          false, // Esta condição sempre retorna false, removendo todas as rotas anteriores
+    );
+  }
+}
+
+class ChangeToMainMenuInspector implements ErrorMessageAction {
+  User user;
+  ChangeToMainMenuInspector({required this.user});
+  @override
+  void execute(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => MainMenuInspection(user: user)),
       (Route<dynamic> route) =>
           false, // Esta condição sempre retorna false, removendo todas as rotas anteriores
     );

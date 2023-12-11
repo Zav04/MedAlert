@@ -123,6 +123,87 @@ Future<CreateDBResponse> getPrecription(int idPrecription) async {
   }
 }
 
+Future<CreateDBResponse> getUserRole(int iduser) async {
+  try {
+    final response = await supabase
+        .rpc('get_user_role', params: {'_id_user': iduser}).execute();
+
+    //Sucesso
+    if (response.error == null) {
+      return CreateDBResponse(
+        success: true,
+        data: response.data,
+      );
+    } else {
+      // Falha, com mensagem de erro
+      return CreateDBResponse(
+        success: false,
+        errorMessage: response.error?.message,
+      );
+    }
+  } catch (e) {
+    // Falha, com exceção capturada
+    return CreateDBResponse(
+      success: false,
+      errorMessage: e.toString(),
+    );
+  }
+}
+
+Future<CreateDBResponse> getFamilyMemberMedicalHistory(int iduser) async {
+  try {
+    final response = await supabase.rpc('get_family_member_medical_history',
+        params: {'_family_user_id': iduser}).execute();
+
+    //Sucesso
+    if (response.error == null) {
+      return CreateDBResponse(
+        success: true,
+        data: response.data,
+      );
+    } else {
+      // Falha, com mensagem de erro
+      return CreateDBResponse(
+        success: false,
+        errorMessage: response.error?.message,
+      );
+    }
+  } catch (e) {
+    // Falha, com exceção capturada
+    return CreateDBResponse(
+      success: false,
+      errorMessage: e.toString(),
+    );
+  }
+}
+
+Future<CreateDBResponse> getPacientNameAssociated(int iduser) async {
+  try {
+    final response = await supabase.rpc('get_family_member_name',
+        params: {'_family_user_id': iduser}).execute();
+
+    //Sucesso
+    if (response.error == null) {
+      return CreateDBResponse(
+        success: true,
+        data: response.data,
+      );
+    } else {
+      // Falha, com mensagem de erro
+      return CreateDBResponse(
+        success: false,
+        errorMessage: response.error?.message,
+      );
+    }
+  } catch (e) {
+    // Falha, com exceção capturada
+    return CreateDBResponse(
+      success: false,
+      errorMessage: e.toString(),
+    );
+  }
+}
+
 Future<CreateDBResponse> createUser({
   required String? email,
   required String? password,

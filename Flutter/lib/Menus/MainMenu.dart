@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import '../Class/Class_User.dart';
-import '../Class/Class_MedicalPrescription.dart';
+import '../Class/Class_Appointment.dart';
 import '../Controller/DataBaseConection.dart';
 import '../Widgets/Cards.dart';
 import 'package:gap/gap.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../Widgets/Notification_Service.dart';
 
 class MainMenu extends StatefulWidget {
   final User user;
