@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 const String supabaseUrl = 'https://exaeozpjrqqzfrztgulf.supabase.co';
 const String supabaseKey =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YWVvenBqcnFxemZyenRndWxmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5ODc2NDcwNCwiZXhwIjoyMDE0MzQwNzA0fQ.dTFuOFu1IXdZ2DvafCpjW-hbGYKaLw-aZl9qk4O-m5A'; // Use sua chave de serviço real aqui.
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YWVvenBqcnFxemZyenRndWxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTg3NjQ3MDQsImV4cCI6MjAxNDM0MDcwNH0.o0erAjezlW5RmfbX_6KuJ60Z40ziQAHFs7ndj_67ASQ'; // Use sua chave de serviço real aqui.
 
 final SupabaseClient supabase = SupabaseClient(supabaseUrl, supabaseKey);
 

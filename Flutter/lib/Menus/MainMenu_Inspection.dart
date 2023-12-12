@@ -19,8 +19,7 @@ class _MainMenuState extends State<MainMenuInspection> {
 
   @override
   void initState() {
-    fetchAssociatedPatients(widget.user.userId);
-    fetchFamilyAppointments(widget.user.userId); // Inicializa com o dia atual
+    fetchFamilyAppointments(widget.user.userId);
     super.initState();
   }
 
@@ -55,8 +54,7 @@ class _MainMenuState extends State<MainMenuInspection> {
                   }).toList(),
                   onChanged: (newValue) {
                     setState(() {
-                      selectedPatient = newValue;
-                      //fetchFamilyAppointments(selectedPatient);
+                      onSelectedPatientChanged(newValue);
                     });
                   },
                 ),
@@ -65,9 +63,9 @@ class _MainMenuState extends State<MainMenuInspection> {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: appointmentFamily.length,
+                itemCount: filtredappointmentFamily.length,
                 itemBuilder: (context, index) {
-                  final appointment = appointmentFamily[index];
+                  final appointment = filtredappointmentFamily[index];
                   return InspectionCard(
                     appointment: appointment,
                   );
@@ -102,6 +100,7 @@ class _MainMenuState extends State<MainMenuInspection> {
 
       setState(() {
         appointmentFamily = tempAppointmentFamily;
+        fetchAssociatedNamePatients(familyUserId);
       });
     } else {
       setState(() {
@@ -110,7 +109,7 @@ class _MainMenuState extends State<MainMenuInspection> {
     }
   }
 
-  void fetchAssociatedPatients(int userId) async {
+  void fetchAssociatedNamePatients(int userId) async {
     var result = await getPacientNameAssociated(userId); // Sua chamada de API
     if (result.data is List) {
       Map<int, String> tempAssociatedPatients = {};
@@ -123,11 +122,35 @@ class _MainMenuState extends State<MainMenuInspection> {
       setState(() {
         associatedPaciente = tempAssociatedPatients;
         selectedPatient = associatedPaciente.keys.first;
+        filterAppointmentsForSelectedPatient(selectedPatient);
       });
     } else {
       setState(() {
         associatedPaciente = {};
       });
     }
+  }
+
+  void filterAppointmentsForSelectedPatient(int? selectedPatientId) {
+    if (selectedPatientId == null) {
+      setState(() {
+        filtredappointmentFamily = [];
+      });
+      return; // Isto completa a função se selectedPatientId é null.
+    }
+    List<AppointmentInspect> filteredList = appointmentFamily
+        .where((appointment) => appointment.iduser == selectedPatientId)
+        .toList();
+
+    setState(() {
+      filtredappointmentFamily = filteredList;
+    });
+  }
+
+  void onSelectedPatientChanged(int? newSelectedPatientId) {
+    setState(() {
+      selectedPatient = newSelectedPatientId;
+    });
+    filterAppointmentsForSelectedPatient(newSelectedPatientId);
   }
 }

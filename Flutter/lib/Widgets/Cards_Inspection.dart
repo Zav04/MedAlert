@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../Class/Class_AppointmentInspect.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 class InspectionCard extends StatefulWidget {
   final AppointmentInspect appointment;
@@ -63,7 +65,7 @@ class _MedicationCardState extends State<InspectionCard> {
           style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         subtitle: !isExpanded
-            ? Text('Dosagem: ${widget.appointment.dosagemNotas}')
+            ? Text('Data: ${formatDate(widget.appointment.historicoData)}')
             : null, // Corrigido o fechamento do parêntese aqui
         leading: CircleAvatar(
           backgroundColor: Colors.grey[200],
@@ -83,35 +85,91 @@ class _MedicationCardState extends State<InspectionCard> {
   List<Widget> _buildDetails() {
     // Inicialize a lista de detalhes com todos os widgets comuns
     List<Widget> details = [
-      buildDetailRow('Dosagem:', widget.appointment.dosagemNotas),
-      buildDetailRow('Medicamento:', widget.appointment.dosagemNotas),
-      buildDetailRow('Médico:', widget.appointment.dosagemNotas),
-      buildDetailRow('Emissão:', formatDate(widget.appointment.dataDeEmissao)),
-      buildDetailRow('Validade:', formatDate(widget.appointment.dosagemNotas)),
+      buildDetailRow('Nome do Medicamento', widget.appointment.nomeMedicamento),
       buildDetailRow(
-          'Fim do Tratamento:', formatDate(widget.appointment.dataDeFim)),
+          'Informação do Medicamento:', widget.appointment.medicamentoInfo),
+      buildDetailRow(
+          'Horario de Ingestão:', formatDate(widget.appointment.historicoData)),
+      buildDetailRow('Dosagem:', widget.appointment.dosagemNotas),
+      buildDetailRow('Tempo entre Dosagens (Horas):',
+          widget.appointment.dosagemTempo.toString()),
+      buildDetailRow('Data de Inicio do Tratamento:',
+          formatDate(widget.appointment.dataDeincio)),
+      buildDetailRow('Data de Fim do Tratamento:',
+          formatDate(widget.appointment.dataDeFim)),
+      buildDetailRow('Nome do Médico:', widget.appointment.nomeMedico),
     ];
+
+    if (widget.appointment.imageData != null) {
+      details.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: ElevatedButton(
+            child: const Text("Ver Imagem"),
+            onPressed: () =>
+                _showImageDialog(context, widget.appointment.imageData!),
+          ),
+        ),
+      );
+    }
+
     return details;
   }
 
-  Widget buildDetailRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(
-          left: 16.0, bottom: 8.0), // Adiciona um espaçamento à esquerda
-      child: Row(
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(
-              width:
-                  8.0), // Você pode adicionar um SizedBox para mais espaçamento entre o título e o valor
-          Flexible(child: Text(value, overflow: TextOverflow.ellipsis)),
-        ],
-      ),
+  void _showImageDialog(BuildContext context, Uint8List imageBytes) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Image.memory(imageBytes),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Fechar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
+}
 
-  String formatDate(String dateString) {
-    DateTime date = DateTime.parse(dateString);
+Widget buildDetailRow(String title, String value) {
+  return Padding(
+    padding: const EdgeInsets.only(
+        left: 16.0,
+        bottom: 8.0,
+        right: 5.0), // Adiciona espaçamento à direita e à esquerda
+    child: Row(
+      crossAxisAlignment:
+          CrossAxisAlignment.start, // Alinha o texto no início da linha
+      children: [
+        Expanded(
+          flex: 2, // Flex para a coluna do título
+          child:
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        Expanded(
+          flex:
+              3, // Flex para a coluna do valor, dando mais espaço para o conteúdo
+          child: Text(value,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 5), // Permite até 3 linhas para o texto
+        ),
+      ],
+    ),
+  );
+}
+
+String formatDate(String dateString) {
+  DateTime date = DateTime.parse(dateString);
+  if (date.hour != 0 || date.minute != 0 || date.second != 0) {
+    // Se houver uma componente de hora na data, formate com data e hora
+    return DateFormat('dd/MM/yyyy HH:mm:ss').format(date);
+  } else {
+    // Se não houver uma componente de hora, formate apenas com a data
     return DateFormat('dd/MM/yyyy').format(date);
   }
 }
